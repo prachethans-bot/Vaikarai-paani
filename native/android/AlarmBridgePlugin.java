@@ -8,7 +8,7 @@ import android.os.Build;
 import android.provider.Settings;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
-import com.getcapacitor.PermissionCallback;
+import com.getcapacitor.annotation.PermissionCallback;
 import com.getcapacitor.PermissionState;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;

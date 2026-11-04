@@ -12,6 +12,8 @@ const components=['<receiver android:name=".AlarmReceiver" android:enabled="true
 if(!manifest.includes('AlarmRingActivity'))manifest=manifest.replace('</application>',components+'\n    </application>');
 const deep='<intent-filter><action android:name="android.intent.action.VIEW"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.BROWSABLE"/><data android:scheme="vaigaraipaani" android:host="spotify-callback"/></intent-filter>';
 if(!manifest.includes('vaigaraipaani'))manifest=manifest.replace('</activity>',deep+'\n        </activity>');
+manifest=manifest.replace(/android:icon="@mipmap\\/ic_launcher"/,'android:icon="@mipmap/ic_launcher_logo"');
+manifest=manifest.replace(/android:roundIcon="@mipmap\\/ic_launcher_round"/,'android:roundIcon="@mipmap/ic_launcher_logo"');
 fs.writeFileSync(manifestPath,manifest);
 const mainPath=path.join(javaRoot,'MainActivity.java');if(!fs.existsSync(mainPath))throw new Error('Capacitor MainActivity.java was not found.');
 fs.writeFileSync(mainPath,'package com.vaigarai.paani;\nimport android.os.Bundle;\nimport com.getcapacitor.BridgeActivity;\npublic class MainActivity extends BridgeActivity { @Override public void onCreate(Bundle savedInstanceState){ registerPlugin(AlarmBridgePlugin.class); super.onCreate(savedInstanceState); } }\n');
@@ -19,5 +21,5 @@ const gradlePath=path.join(appRoot,'build.gradle');let gradle=fs.readFileSync(gr
 if(!gradle.includes('spotify-app-remote-release-0.8.0.aar'))gradle=gradle.replace(/dependencies\s*\{/,"dependencies {\n    implementation files('libs/spotify-app-remote-release-0.8.0.aar')\n    implementation 'com.google.code.gson:gson:2.10.1'");
 fs.writeFileSync(gradlePath,gradle);
 const logo=path.join(root,'public/logo.jpg');if(!fs.existsSync(logo))throw new Error('Permanent logo public/logo.jpg is missing.');
-for(const density of ['mdpi','hdpi','xhdpi','xxhdpi','xxxhdpi']){const dir=path.join(appRoot,'src/main/res/mipmap-'+density);fs.mkdirSync(dir,{recursive:true});fs.copyFileSync(logo,path.join(dir,'ic_launcher.jpg'));fs.copyFileSync(logo,path.join(dir,'ic_launcher_round.jpg'));}
+for(const density of ['mdpi','hdpi','xhdpi','xxhdpi','xxxhdpi']){const dir=path.join(appRoot,'src/main/res/mipmap-'+density);fs.mkdirSync(dir,{recursive:true});fs.copyFileSync(logo,path.join(dir,'ic_launcher_logo.jpg'));}
 console.log('Prepared native alarm runtime, Spotify App Remote and brand launcher assets.');

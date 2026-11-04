@@ -22,7 +22,7 @@ public class AlarmSoundService extends Service {
   if(label==null)label="Alarm";if(uri==null)uri="";
   AlarmReceiver.createChannel(this);Notification ongoing=new NotificationCompat.Builder(this,AlarmReceiver.CHANNEL_ID).setSmallIcon(getApplicationInfo().icon).setContentTitle(label).setContentText("Alarm is ringing").setCategory(NotificationCompat.CATEGORY_ALARM).setOngoing(true).build();
   if(Build.VERSION.SDK_INT>=29)startForeground(7402,ongoing,android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);else startForeground(7402,ongoing);
-  if(!uri.isEmpty())connectSpotify(uri);handler.postDelayed(()->{if(!spotifyStarted)startFallbackTone();},7000);return START_STICKY;
+  if(uri.isEmpty())startFallbackTone();else{connectSpotify(uri);handler.postDelayed(()->{if(!spotifyStarted)startFallbackTone();},6500);}return START_STICKY;
  }
  private void connectSpotify(String uri){
   ConnectionParams params=new ConnectionParams.Builder(CLIENT_ID).setRedirectUri(REDIRECT_URI).showAuthView(false).build();

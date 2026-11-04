@@ -26,6 +26,7 @@ jobs:
           log-accepted-android-sdk-licenses: 'false'
       - run: npm install
       - run: npm run build
+      - run: npm test
       - run: npx cap add android
       - run: npm run android:prepare
       - name: Download Spotify App Remote SDK
