@@ -1,0 +1,4 @@
+import { create } from 'zustand'; import { persist, createJSONStorage } from 'zustand/middleware';
+export type Alarm={id:string;time:string;label:string;days:number[];enabled:boolean;trackName?:string;artist?:string};
+type State={alarms:Alarm[];addAlarm:(a:Alarm)=>void;toggleAlarm:(id:string)=>void;removeAlarm:(id:string)=>void;};
+export const useStore=create<State>()(persist((set)=>({alarms:[{id:'demo',time:'06:30',label:'Morning',days:[1,2,3,4,5],enabled:true}],addAlarm:a=>set(s=>({alarms:[...s.alarms,a]})),toggleAlarm:id=>set(s=>({alarms:s.alarms.map(a=>a.id===id?{...a,enabled:!a.enabled}:a)})),removeAlarm:id=>set(s=>({alarms:s.alarms.filter(a=>a.id!==id)}))}),{name:'vaigarai-paani-v1',storage:createJSONStorage(()=>localStorage)}));
