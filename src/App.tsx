@@ -3,8 +3,10 @@ import type { FormEvent } from 'react';
 import { App as CapApp } from '@capacitor/app';
 import { AlarmClock, Globe2, Hourglass, Plus, Trash2, Moon, Sun, Music2, Play, Pause, RotateCcw, X, Search, Check, ChevronRight, Bell, ShieldCheck, Volume2, Clock3, SkipForward } from 'lucide-react';
 import { AlarmBridge, isNative } from './native';
-import { Alarm, WEEKDAYS, formatClock, formatDuration, nextAlarmAt } from './core';
-import { finishSpotifyRedirect, searchSpotifyTracks, spotifyConnected, startSpotifyLogin, SpotifyTrack, disconnectSpotify } from './spotify';
+import { WEEKDAYS, formatClock, formatDuration, nextAlarmAt } from './core';
+import type { Alarm } from './core';
+import { finishSpotifyRedirect, searchSpotifyTracks, spotifyConnected, startSpotifyLogin, disconnectSpotify } from './spotify';
+import type { SpotifyTrack } from './spotify';
 
 type Tab='alarms'|'world'|'timer'|'stopwatch';
 type Theme='dark'|'light';
