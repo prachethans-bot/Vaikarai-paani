@@ -1,0 +1,1 @@
+Native Android sources are copied into the generated Capacitor Android project by scripts/prepare-android.mjs. The Android CI workflow downloads Spotify's official App Remote 0.8.0 AAR before compilation. Do not add signing keys or client secrets here.
