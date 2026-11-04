@@ -12,8 +12,8 @@ const components=['<receiver android:name=".AlarmReceiver" android:enabled="true
 if(!manifest.includes('AlarmRingActivity'))manifest=manifest.replace('</application>',components+'\n    </application>');
 const deep='<intent-filter><action android:name="android.intent.action.VIEW"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.BROWSABLE"/><data android:scheme="vaigaraipaani" android:host="spotify-callback"/></intent-filter>';
 if(!manifest.includes('vaigaraipaani'))manifest=manifest.replace('</activity>',deep+'\n        </activity>');
-manifest=manifest.replace(/android:icon="@mipmap\\/ic_launcher"/,'android:icon="@mipmap/ic_launcher_logo"');
-manifest=manifest.replace(/android:roundIcon="@mipmap\\/ic_launcher_round"/,'android:roundIcon="@mipmap/ic_launcher_logo"');
+manifest=manifest.replace('android:icon="@mipmap/ic_launcher"','android:icon="@mipmap/ic_launcher_logo"');
+manifest=manifest.replace('android:roundIcon="@mipmap/ic_launcher_round"','android:roundIcon="@mipmap/ic_launcher_logo"');
 fs.writeFileSync(manifestPath,manifest);
 const mainPath=path.join(javaRoot,'MainActivity.java');if(!fs.existsSync(mainPath))throw new Error('Capacitor MainActivity.java was not found.');
 fs.writeFileSync(mainPath,'package com.vaigarai.paani;\nimport android.os.Bundle;\nimport com.getcapacitor.BridgeActivity;\npublic class MainActivity extends BridgeActivity { @Override public void onCreate(Bundle savedInstanceState){ registerPlugin(AlarmBridgePlugin.class); super.onCreate(savedInstanceState); } }\n');
