@@ -1,29 +1,26 @@
-# வைகறைப் பாணி
+# வைகறைப் பாணி (Vaigarai Paani)
 
-A React + TypeScript + Capacitor Android app foundation for a calm alarm, world clock, stopwatch and timer experience.
+An Android-first alarm and time companion with the permanent silver wordmark, native alarm scheduling, repeating schedules, snooze/dismiss, world clocks, stopwatch, countdown timer and Spotify track selection.
 
-## Current implementation status
+## Android build
+GitHub Actions builds an installable debug APK on every push to main. The workflow generates the Capacitor Android host, adds the native AlarmBridge plugin, downloads Spotify's official App Remote AAR and uploads the APK artifact.
 
-- Responsive dark/light UI, alarms CRUD stored locally, world clock display, stopwatch and in-app countdown timer are included.
-- This is an initial foundation, **not a production-ready alarm APK**. Android exact alarm scheduling, boot recovery, foreground/lock-screen ringing, native audio playback, persistent background timers, and Spotify Android playback have not yet been implemented or verified.
-- Spotify Client ID and redirect URI are configuration values only. Spotify's written alarm-use approval has been reported by the project owner but has not been independently verified here. Keep the approval record and comply with its exact scope and Spotify's developer terms.
-- PixelNex is configured as the intended Supabase project reference, but no database schema or Edge Function changes have been made. Its existing app functions must be preserved.
+## Alarm architecture
+- Exact alarm scheduling uses Android AlarmManager.setAlarmClock.
+- Alarm records are kept in Android SharedPreferences and restored on reboot, app update, time change and timezone change.
+- Full-screen ringing uses a native lock-screen activity with Snooze (5 minutes) and Dismiss.
+- Native alarm audio requests Spotify App Remote for a selected track and uses the device's default alarm tone as a fallback.
+- Countdown completion uses Android's alarm service and can fire when the WebView is closed.
+- Android may require exact-alarm, notification and full-screen-intent permissions. OEM battery controls can affect delivery and should be acceptance-tested on the target device.
 
-## Setup
-
-1. Install Node.js 20+ and Android Studio with Android SDK.
-2. Copy `.env.example` to `.env` and fill in the Supabase publishable key from the Supabase dashboard. Never put a Supabase secret/service-role key in the app.
-3. Run `npm install`, `npm run dev` for web preview.
-4. Run `npm run build`, `npx cap add android`, then `npx cap sync android` and open with `npx cap open android`.
-
-## Spotify
-
-Register `vaigaraipaani://spotify-callback` as the exact Redirect URI in Spotify Developer Dashboard. Use Authorization Code with PKCE; do not create or embed a client secret in the Android app. Spotify audio/alarm functionality must remain disabled until the written approval's scope is confirmed and the native integration is implemented and tested.
+## Spotify requirements
+Spotify App Remote uses the Spotify app for playback; Spotify must be installed and signed in. The registered Android package name and signing-certificate fingerprint must match the Spotify Developer Dashboard app configuration. No client secret is embedded in this app.
 
 ## Supabase
+PixelNex has not been modified. This version stores alarms on-device so that scheduling does not depend on network availability. No database migrations or Edge Function changes are performed.
 
-Project ref: `uwvizniuhecczokwwgur`. No schema migration is included. Review the existing PixelNex tables/functions and configure RLS before adding any app-specific data.
+## Signing and release
+The CI artifact is a debug-signed APK for direct installation and acceptance testing. A production release APK requires the project's private signing keystore and protected CI secrets. Do not commit signing keys or passwords.
 
-## Android release
-
-A signed release APK requires a project-owned signing keystore and passwords configured as GitHub Actions secrets. Do not commit keystore files or passwords. A successful web build does not prove native alarm reliability; test exact alarms, reboot, Doze/battery restrictions, lock screen, audio focus and notification permission on physical Android devices.
+## Device acceptance checklist
+Test ringing while locked, after app closure, after reboot, with battery saver enabled, exact alarm access granted and denied, Spotify connected/disconnected, and Spotify not installed. Physical device testing is required to validate OEM-specific alarm behaviour.
