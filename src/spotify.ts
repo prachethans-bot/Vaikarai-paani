@@ -21,7 +21,7 @@ function randomString(length:number):string {
 async function challengeFor(verifier:string):Promise<string>{
  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(verifier));
  const bytes=new Uint8Array(digest);let binary='';bytes.forEach((b)=>{binary+=String.fromCharCode(b);});
- return btoa(binary).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'');
+ return btoa(binary).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'');
 }
 function readTokens():TokenSet|null {try{const raw=localStorage.getItem(TOKEN_KEY);return raw?JSON.parse(raw) as TokenSet:null;}catch{return null;}}
 function saveTokens(tokens:TokenSet){localStorage.setItem(TOKEN_KEY,JSON.stringify(tokens));}
