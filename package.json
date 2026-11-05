@@ -15,7 +15,6 @@
   "dependencies": {
     "@capacitor/android": "7.4.3",
     "@capacitor/app": "7.1.0",
-    "@capacitor/browser": "7.0.2",
     "@capacitor/core": "7.4.3",
     "@capacitor/haptics": "7.0.2",
     "@capacitor/local-notifications": "7.0.2",
