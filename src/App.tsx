@@ -33,7 +33,11 @@ export default function App(){
  const [showSpotify,setShowSpotify]=useState(false);
  const [spotifyQuery,setSpotifyQuery]=useState('');
  const [spotifyResults,setSpotifyResults]=useState<SpotifyTrack[]>([]);
- const [spotifyLoading,setSpotifyLoading]=useState(false);\n const [spotifyView,setSpotifyView]=useState<'playlists'|'liked'|'search'>('playlists');\n const [spotifyPlaylists,setSpotifyPlaylists]=useState<SpotifyPlaylist[]>([]);\n const [selectedPlaylist,setSelectedPlaylist]=useState<SpotifyPlaylist|null>(null);\n const [spotifyMessage,setSpotifyMessage]=useState('');
+ const [spotifyLoading,setSpotifyLoading]=useState(false);
+ const [spotifyView,setSpotifyView]=useState<'playlists'|'liked'|'search'>('playlists');
+ const [spotifyPlaylists,setSpotifyPlaylists]=useState<SpotifyPlaylist[]>([]);
+ const [selectedPlaylist,setSelectedPlaylist]=useState<SpotifyPlaylist|null>(null);
+ const [spotifyMessage,setSpotifyMessage]=useState('');
  const [chosenTrack,setChosenTrack]=useState<SpotifyTrack|null>(null);
  const [formTime,setFormTime]=useState('07:00');
  const [formLabel,setFormLabel]=useState('Wake up');
