@@ -1,4 +1,4 @@
-export type Alarm = { id:string; time:string; label:string; days:number[]; enabled:boolean; trackUri?:string; trackName?:string };
+export type Alarm = { id:string; time:string; label:string; days:number[]; enabled:boolean; trackId?:number; trackName?:string; trackArtist?:string; previewUrl?:string; artworkUrl?:string; localAudioPath?:string; localArtworkPath?:string };
 export const WEEKDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 export function nextAlarmAt(time:string,days:number[],now=new Date()):number {
  const parts=time.split(':').map(Number); const hour=parts[0]; const minute=parts[1];
