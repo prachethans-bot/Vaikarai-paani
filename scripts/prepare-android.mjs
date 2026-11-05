@@ -14,9 +14,6 @@ manifest=manifest.replace('android:icon="@mipmap/ic_launcher"','android:icon="@m
 fs.writeFileSync(manifestPath,manifest);
 const mainPath=path.join(javaRoot,'MainActivity.java');if(!fs.existsSync(mainPath))throw new Error('Capacitor MainActivity.java was not found.');
 fs.writeFileSync(mainPath,'package com.vaigarai.paani;\nimport android.os.Bundle;\nimport com.getcapacitor.BridgeActivity;\npublic class MainActivity extends BridgeActivity { @Override public void onCreate(Bundle savedInstanceState){ registerPlugin(AlarmBridgePlugin.class); super.onCreate(savedInstanceState); } }\n');
-const gradlePath=path.join(appRoot,'build.gradle');let gradle=fs.readFileSync(gradlePath,'utf8');
-if(!gradle.includes('gson:2.10.1'))gradle=gradle.replace(/dependencies\\s*\\{/, "dependencies {\n    implementation 'com.google.code.gson:gson:2.10.1'");
-fs.writeFileSync(gradlePath,gradle);
 const logo=path.join(root,'public/logo.jpg');if(!fs.existsSync(logo))throw new Error('Permanent logo public/logo.jpg is missing.');
 for(const density of ['mdpi','hdpi','xhdpi','xxhdpi','xxxhdpi']){const dir=path.join(appRoot,'src/main/res/mipmap-'+density);fs.mkdirSync(dir,{recursive:true});fs.copyFileSync(logo,path.join(dir,'ic_launcher_logo.jpg'));}
 const rawDir=path.join(appRoot,'src/main/res/raw');fs.mkdirSync(rawDir,{recursive:true});
