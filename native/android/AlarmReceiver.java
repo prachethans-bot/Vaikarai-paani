@@ -16,7 +16,7 @@ public class AlarmReceiver extends BroadcastReceiver {
   c.getSharedPreferences("vaigarai_active_ring",Context.MODE_PRIVATE).edit().putString("id",id).putString("label",label).putString("trackName",track).putString("trackArtist",artist).putString("localAudioPath",audio).putString("localArtworkPath",art).apply();
   Intent service=new Intent(c,AlarmSoundService.class).putExtra("id",id).putExtra("label",label).putExtra("trackName",track).putExtra("trackArtist",artist).putExtra("localAudioPath",audio).putExtra("localArtworkPath",art);
   try{if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O)c.startForegroundService(service);else c.startService(service);}catch(Exception ignored){}
-  createChannel(c);Intent ring=new Intent(c,AlarmRingActivity.class).putExtra("id",id).putExtra("label",label).putExtra("trackUri",uri).putExtra("trackName",track);
+  createChannel(c);Intent ring=new Intent(c,AlarmRingActivity.class).putExtra("id",id).putExtra("label",label).putExtra("trackName",track).putExtra("trackArtist",artist).putExtra("localAudioPath",audio).putExtra("localArtworkPath",art);
   ring.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
   PendingIntent full=PendingIntent.getActivity(c,id.hashCode(),ring,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
   Notification n=new NotificationCompat.Builder(c,CHANNEL_ID).setSmallIcon(c.getApplicationInfo().icon).setContentTitle(label).setContentText(track.isEmpty()?"It's time to wake up.":track).setCategory(NotificationCompat.CATEGORY_ALARM).setPriority(NotificationCompat.PRIORITY_MAX).setVisibility(NotificationCompat.VISIBILITY_PUBLIC).setOngoing(true).setAutoCancel(false).setFullScreenIntent(full,true).setContentIntent(full).build();
