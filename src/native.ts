@@ -5,6 +5,9 @@ type AlarmBridgePlugin = {
  requestExactAlarmAccess():Promise<{opened:boolean}>;
  requestNotificationPermission():Promise<{granted:boolean}>;
  requestFullScreenPermission():Promise<{allowed:boolean;opened:boolean}>;
+ checkBatteryOptimizationExemption():Promise<{allowed:boolean}>;
+ checkNotificationPermission():Promise<{granted:boolean}>;
+ checkFullScreenPermission():Promise<{allowed:boolean}>;
  requestBatteryOptimizationExemption():Promise<{allowed:boolean;opened:boolean}>;
  downloadTrack(options:{trackId:number;previewUrl:string;artworkUrl:string}):Promise<{localAudioPath:string;localArtworkPath:string}>;
  scheduleAlarm(options:NativeAlarmInput):Promise<{scheduled:boolean}>;
