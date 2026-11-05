@@ -96,13 +96,13 @@ export async function getSpotifyPlaylists():Promise<SpotifyPlaylist[]>{
 export async function getSpotifyPlaylistTracks(playlistId:string):Promise<SpotifyTrack[]>{
  const results:SpotifyTrack[]=[];let url:string|null='/playlists/'+encodeURIComponent(playlistId)+'/items?limit=50';
  let pages=0;
- while(url&&pages<20){const page=await spotifyGet<Page<{item?:RawTrack;track?:RawTrack}>>(url);for(const entry of page.items||[]){const track=toTrack(entry.item||entry.track);if(track)results.push(track);}url=page.next||null;pages++;}
+ while(url&&pages<20){const page:Page<{item?:RawTrack;track?:RawTrack}>=await spotifyGet<Page<{item?:RawTrack;track?:RawTrack}>>(url);for(const entry of page.items||[]){const track=toTrack(entry.item||entry.track);if(track)results.push(track);}url=page.next||null;pages++;}
  return results;
 }
 
 export async function getSpotifySavedTracks():Promise<SpotifyTrack[]>{
  const results:SpotifyTrack[]=[];let url:string|null='/me/tracks?limit=50';let pages=0;
- while(url&&pages<20){const page=await spotifyGet<Page<{track?:RawTrack}>>(url);for(const entry of page.items||[]){const track=toTrack(entry.track);if(track)results.push(track);}url=page.next||null;pages++;}
+ while(url&&pages<20){const page:Page<{track?:RawTrack}>=await spotifyGet<Page<{track?:RawTrack}>>(url);for(const entry of page.items||[]){const track=toTrack(entry.track);if(track)results.push(track);}url=page.next||null;pages++;}
  return results;
 }
 
