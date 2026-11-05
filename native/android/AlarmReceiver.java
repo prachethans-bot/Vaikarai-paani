@@ -12,9 +12,9 @@ public class AlarmReceiver extends BroadcastReceiver {
  static final String CHANNEL_ID="vaigarai_alarm_channel";static final int NOTIFICATION_ID=7401;
  @Override public void onReceive(Context c,Intent intent){
   String id=intent.getStringExtra("id");if(id==null)return;org.json.JSONObject r=AlarmScheduler.consumeAndAdvance(c,id);if(r==null)return;
-  String label=r.optString("label","Alarm");String uri=r.optString("trackUri","");String track=r.optString("trackName","");
-  c.getSharedPreferences("vaigarai_active_ring",Context.MODE_PRIVATE).edit().putString("id",id).putString("label",label).putString("trackUri",uri).putString("trackName",track).apply();
-  Intent service=new Intent(c,AlarmSoundService.class).putExtra("id",id).putExtra("label",label).putExtra("trackUri",uri).putExtra("trackName",track);
+  String label=r.optString("label","Alarm");String track=r.optString("trackName","");String artist=r.optString("trackArtist","");String audio=r.optString("localAudioPath","");String art=r.optString("localArtworkPath","");
+  c.getSharedPreferences("vaigarai_active_ring",Context.MODE_PRIVATE).edit().putString("id",id).putString("label",label).putString("trackName",track).putString("trackArtist",artist).putString("localAudioPath",audio).putString("localArtworkPath",art).apply();
+  Intent service=new Intent(c,AlarmSoundService.class).putExtra("id",id).putExtra("label",label).putExtra("trackName",track).putExtra("trackArtist",artist).putExtra("localAudioPath",audio).putExtra("localArtworkPath",art);
   try{if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O)c.startForegroundService(service);else c.startService(service);}catch(Exception ignored){}
   createChannel(c);Intent ring=new Intent(c,AlarmRingActivity.class).putExtra("id",id).putExtra("label",label).putExtra("trackUri",uri).putExtra("trackName",track);
   ring.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
