@@ -32,12 +32,7 @@ export async function searchITunesSongs(query: string): Promise<ITunesTrack[]> {
   const term = query.trim();
   if (!term) return [];
   const makeUrl = (country: 'IN' | 'US') => {
-    const url = new URL(endpoint);
-    url.searchParams.set('term', term);
-    url.searchParams.set('entity', 'song');
-    url.searchParams.set('country', country);
-    url.searchParams.set('limit', '15');
-    return url.toString();
+    return endpoint + '?term=' + encodeURIComponent(term) + '&entity=song&country=' + country + '&limit=15';
   };
   const [india, usa] = await Promise.allSettled([
     fetch(makeUrl('IN')).then(async response => { if (!response.ok) throw new Error('India search failed'); return response.json() as Promise<ITunesResponse>; }),
@@ -49,7 +44,10 @@ export async function searchITunesSongs(query: string): Promise<ITunesTrack[]> {
   if (usa.status === 'fulfilled') for (const raw of usa.value.results || []) { const track = normalize(raw, 'USA'); if (track && !merged.has(track.trackId)) merged.set(track.trackId, track); }
   return [...merged.values()].sort((a,b) => {
     if (a.country !== b.country) return a.country === 'IND' ? -1 : 1;
-    return originalVersionScore(b) - originalVersionScore(a);
+    const queryText = term.toLowerCase();
+    const aExact = a.trackName.toLowerCase().includes(queryText) ? 2 : 0;
+    const bExact = b.trackName.toLowerCase().includes(queryText) ? 2 : 0;
+    return (bExact + originalVersionScore(b)) - (aExact + originalVersionScore(a));
   });
 }
 export function artwork600(url: string): string { return url.replace('100x100', '600x600'); }
