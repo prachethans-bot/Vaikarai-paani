@@ -3,7 +3,7 @@ import {Capacitor} from '@capacitor/core';
 
 const CLIENT_ID='ba853c15adbb4d8da15680aef114a163';
 export const SPOTIFY_REDIRECT='vaigaraipaani://spotify-callback';
-const TOKEN_KEY='vp_spotify_tokens';
+const TOKEN_KEY='vp_spotify_tokens_v2';
 const VERIFIER_KEY='vp_spotify_verifier';
 const STATE_KEY='vp_spotify_state';
 
