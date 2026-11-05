@@ -54,7 +54,7 @@ export default function App(){
  const elapsedMs=stopwatchElapsed+(stopwatchStartedAt===null?0:Math.max(0,now-stopwatchStartedAt));
 
  const announce=useCallback((message:string)=>{setNotice(message);window.setTimeout(()=>setNotice(''),4200);},[]);
- const checkPermissions=useCallback(async()=>{if(!isNative){setPermission('web');return;}try{const result=await AlarmBridge.checkExactAlarmPermission();setPermission(result.allowed?'granted':'missing');}catch{setPermission('missing');}},[]);
+ const checkPermissions=useCallback(async()=>{if(!isNative){setPermission('web');return;}try{const [result,notifications,full,battery]=await Promise.all([AlarmBridge.checkExactAlarmPermission(),AlarmBridge.checkNotificationPermission(),AlarmBridge.checkFullScreenPermission(),AlarmBridge.checkBatteryOptimizationExemption()]);setPermission(result.allowed&&notifications.granted&&full.allowed&&battery.allowed?'granted':'missing');}catch{setPermission('missing');}},[]);
  const scheduleNativeAlarms=useCallback(async(list:Alarm[])=>{
   if(!isNative)return;
   await Promise.allSettled(list.filter((a)=>a.enabled).map((a)=>AlarmBridge.scheduleAlarm({id:a.id,time:a.time,at:nextAlarmAt(a.time,a.days),label:a.label,days:a.days,trackId:a.trackId,trackName:a.trackName,trackArtist:a.trackArtist,previewUrl:a.previewUrl,artworkUrl:a.artworkUrl,localAudioPath:a.localAudioPath,localArtworkPath:a.localArtworkPath,type:'alarm'})));
