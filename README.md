@@ -1,26 +1,23 @@
-# வைகறைப் பாணி (Vaigarai Paani)
+# વைகறைப் பாணி
 
-An Android-first alarm and time companion with the permanent silver wordmark, native alarm scheduling, repeating schedules, snooze/dismiss, world clocks, stopwatch, countdown timer and Spotify track selection.
+An Android-first alarm and time companion. All music search uses the public Apple iTunes Search API. No Spotify, Joytify, or unofficial music API is used.
+
+## Music search
+- Searches the India and US iTunes song catalogues concurrently after a 500 ms typing pause.
+- Keeps only tracks with a playable 30-second preview, de-duplicates by track ID, and lists India results first.
+- Preview clips are the alarm audio source. The app downloads and stores selected previews and artwork locally for offline use.
+- iTunes Search API is keyless. Availability and catalogue contents depend on Apple's regional search results.
 
 ## Android build
-GitHub Actions builds an installable debug APK on every push to main. The workflow generates the Capacitor Android host, adds the native AlarmBridge plugin, downloads Spotify's official App Remote AAR and uploads the APK artifact.
+GitHub Actions builds the Capacitor Android app and uploads a debug APK artifact on every push to main.
 
-## Alarm architecture
-- Exact alarm scheduling uses Android AlarmManager.setAlarmClock.
-- Alarm records are kept in Android SharedPreferences and restored on reboot, app update, time change and timezone change.
-- Full-screen ringing uses a native lock-screen activity with Snooze (5 minutes) and Dismiss.
-- Native alarm audio requests Spotify App Remote for a selected track and uses the device's default alarm tone as a fallback.
-- Countdown completion uses Android's alarm service and can fire when the WebView is closed.
-- Android may require exact-alarm, notification and full-screen-intent permissions. OEM battery controls can affect delivery and should be acceptance-tested on the target device.
+## Alarm runtime
+Exact alarms use Android AlarmManager. Native alarm records are restored after reboot, app update, time changes and timezone changes. A foreground media-playback service loops the locally cached preview and falls back to the bundled default alarm tone if the selected audio is unavailable. The ringing activity provides Snooze and Dismiss controls on the lock screen.
 
-## Spotify requirements
-Spotify App Remote uses the Spotify app for playback; Spotify must be installed and signed in. The registered Android package name and signing-certificate fingerprint must match the Spotify Developer Dashboard app configuration. No client secret is embedded in this app.
+Android permissions include notifications, exact alarms, full-screen alarm notifications, and battery optimization exemption. Android/OEM settings can still restrict background behaviour, so physical-device testing is required.
 
-## Supabase
-PixelNex has not been modified. This version stores alarms on-device so that scheduling does not depend on network availability. No database migrations or Edge Function changes are performed.
+## Local storage and privacy
+Music previews and artwork are cached in the app's private files directory. Alarm metadata is stored locally. No music account login is required.
 
-## Signing and release
-The CI artifact is a debug-signed APK for direct installation and acceptance testing. A production release APK requires the project's private signing keystore and protected CI secrets. Do not commit signing keys or passwords.
-
-## Device acceptance checklist
-Test ringing while locked, after app closure, after reboot, with battery saver enabled, exact alarm access granted and denied, Spotify connected/disconnected, and Spotify not installed. Physical device testing is required to validate OEM-specific alarm behaviour.
+## Signing
+The CI artifact is a debug APK for installation and testing. A production release APK requires a private signing keystore and protected CI secrets. Never commit signing keys or passwords.
