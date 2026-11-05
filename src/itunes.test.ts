@@ -12,7 +12,7 @@ describe('iTunes dual-region search',()=>{
  it('searches India and US concurrently, puts India first, de-duplicates and skips missing previews',async()=>{
   const fetchMock=vi.fn((input:RequestInfo|URL)=>{
    const url=new URL(String(input));
-   if(url.searchParams.get('country')==='IN')return Promise.resolve(new Response(JSON.stringify({resultCount:3,results:[song(10,'Hukum','Anirudh'),song(11,'Hukum Lullaby','Kids',undefined),song(12,'Song','Artist','')}]),{status:200}));
+   if(url.searchParams.get('country')==='IN')return Promise.resolve(new Response(JSON.stringify({resultCount:3,results:[song(10,'Hukum','Anirudh'),song(11,'Hukum Lullaby','Kids',''),song(12,'Song','Artist','')}]),{status:200}));
    return Promise.resolve(new Response(JSON.stringify({resultCount:2,results:[song(10,'Hukum','Anirudh US'),song(20,'Blinding Lights','The Weeknd')]}),{status:200}));
   });
   vi.stubGlobal('fetch',fetchMock);
