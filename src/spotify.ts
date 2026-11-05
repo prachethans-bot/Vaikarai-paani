@@ -75,7 +75,7 @@ async function spotifyGet<T>(path:string):Promise<T>{
  try{data=raw?JSON.parse(raw) as Record<string,unknown>:{};}catch{data={};}
  if(!response.ok){
   if(response.status===401){localStorage.removeItem(TOKEN_KEY);throw new Error('Spotify session expired. Reconnect Spotify and approve the requested permissions.');}
-  if(response.status===403)throw new Error('Spotify denied this request (403). Check that your Spotify account is on the app allowlist and that the requested permissions were approved. Spotify Development Mode also requires the app owner to have Premium.');
+  if(response.status===403){if(path.includes('/playlists/'))throw new Error('Spotify only lets this app read tracks from playlists you own or collaborate on. Try one of your own playlists.');throw new Error('Spotify denied this request (403). Check that this Spotify account is on your app allowlist, approve the requested playlist/library permissions, and make sure the app owner has Spotify Premium in Development Mode.');}
   if(response.status===429)throw new Error('Spotify is rate-limiting requests. Wait a moment and try again.');
   const err=data.error as {message?:string}|undefined;
   throw new Error(err?.message||'Spotify request failed ('+response.status+').');

@@ -62,6 +62,13 @@ export default function App(){
   await Promise.allSettled(list.filter((a)=>!a.enabled).map((a)=>AlarmBridge.cancelAlarm({id:a.id})));
  },[]);
 
+  const connectSpotify=async()=>{try{await startSpotifyLogin();}catch(error){announce(error instanceof Error?error.message:'Could not open Spotify sign-in.');}};
+  const openSpotifyPicker=()=>{setShowSpotify(true);setSpotifyView('playlists');setSelectedPlaylist(null);setSpotifyMessage('');if(spotifyReady)void loadSpotifyPlaylists();};
+  const loadSpotifyPlaylists=async()=>{setSpotifyLoading(true);setSpotifyMessage('');try{setSpotifyPlaylists(await getSpotifyPlaylists());setSpotifyResults([]);}catch(error){setSpotifyMessage(error instanceof Error?error.message:'Could not load your Spotify playlists.');}finally{setSpotifyLoading(false);}};
+  const openSpotifyPlaylist=async(playlist:SpotifyPlaylist)=>{setSelectedPlaylist(playlist);setSpotifyLoading(true);setSpotifyMessage('');try{setSpotifyResults(await getSpotifyPlaylistTracks(playlist.id));}catch(error){setSpotifyResults([]);setSpotifyMessage(error instanceof Error?error.message:'Could not load this playlist.');}finally{setSpotifyLoading(false);}};
+  const loadSpotifyLiked=async()=>{setSpotifyView('liked');setSelectedPlaylist(null);setSpotifyLoading(true);setSpotifyMessage('');try{setSpotifyResults(await getSpotifySavedTracks());}catch(error){setSpotifyResults([]);setSpotifyMessage(error instanceof Error?error.message:'Could not load your saved songs.');}finally{setSpotifyLoading(false);}};
+  const searchTracks=async(event:FormEvent)=>{event.preventDefault();if(!spotifyQuery.trim())return;setSpotifyView('search');setSelectedPlaylist(null);setSpotifyLoading(true);setSpotifyMessage('');try{setSpotifyResults(await searchSpotifyTracks(spotifyQuery.trim()));}catch(error){setSpotifyResults([]);setSpotifyMessage(error instanceof Error?error.message:'Spotify catalogue search failed.');}finally{setSpotifyLoading(false);}};
+
  useEffect(()=>{const tick=window.setInterval(()=>setNow(Date.now()),250);const splash=window.setTimeout(()=>setLoading(false),1450);return()=>{window.clearInterval(tick);window.clearTimeout(splash);};},[]);
  useEffect(()=>{saveState({alarms,theme,stopwatchElapsed,stopwatchStartedAt,timerDuration,timerEndsAt,timerPaused});},[alarms,theme,stopwatchElapsed,stopwatchStartedAt,timerDuration,timerEndsAt,timerPaused]);
  useEffect(()=>{void checkPermissions();void scheduleNativeAlarms(alarms);},[]);
@@ -81,12 +88,6 @@ export default function App(){
  const resetTimer=async()=>{setTimerEndsAt(null);setTimerPaused(timerDuration);if(isNative)await AlarmBridge.cancelTimer({id:'vaigarai-countdown'}).catch(()=>undefined);};
  const toggleStopwatch=()=>{if(stopwatchStartedAt===null)setStopwatchStartedAt(Date.now());else{setStopwatchElapsed(elapsedMs);setStopwatchStartedAt(null);}};
  const resetStopwatch=()=>{setStopwatchStartedAt(null);setStopwatchElapsed(0);};
-  const connectSpotify=async()=>{try{await startSpotifyLogin();}catch(error){announce(error instanceof Error?error.message:'Could not open Spotify sign-in.');}};
-  const openSpotifyPicker=()=>{setShowSpotify(true);setSpotifyView('playlists');setSelectedPlaylist(null);setSpotifyMessage('');if(spotifyReady)void loadSpotifyPlaylists();};
-  const loadSpotifyPlaylists=async()=>{setSpotifyLoading(true);setSpotifyMessage('');try{setSpotifyPlaylists(await getSpotifyPlaylists());setSpotifyResults([]);}catch(error){setSpotifyMessage(error instanceof Error?error.message:'Could not load your Spotify playlists.');}finally{setSpotifyLoading(false);}};
-  const openSpotifyPlaylist=async(playlist:SpotifyPlaylist)=>{setSelectedPlaylist(playlist);setSpotifyLoading(true);setSpotifyMessage('');try{setSpotifyResults(await getSpotifyPlaylistTracks(playlist.id));}catch(error){setSpotifyResults([]);setSpotifyMessage(error instanceof Error?error.message:'Could not load this playlist.');}finally{setSpotifyLoading(false);}};
-  const loadSpotifyLiked=async()=>{setSpotifyView('liked');setSelectedPlaylist(null);setSpotifyLoading(true);setSpotifyMessage('');try{setSpotifyResults(await getSpotifySavedTracks());}catch(error){setSpotifyResults([]);setSpotifyMessage(error instanceof Error?error.message:'Could not load your saved songs.');}finally{setSpotifyLoading(false);}};
-  const searchTracks=async(event:FormEvent)=>{event.preventDefault();if(!spotifyQuery.trim())return;setSpotifyView('search');setSelectedPlaylist(null);setSpotifyLoading(true);setSpotifyMessage('');try{setSpotifyResults(await searchSpotifyTracks(spotifyQuery.trim()));}catch(error){setSpotifyResults([]);setSpotifyMessage(error instanceof Error?error.message:'Spotify catalogue search failed.');}finally{setSpotifyLoading(false);}};
  const title={alarms:'Alarms',world:'World clock',timer:'Timer',stopwatch:'Stopwatch'}[tab];
 
  if(loading)return <main className="splash-screen" aria-label="Vaigarai Paani loading"><img src="/logo.jpg" alt="Vaigarai Paani" className="splash-logo"/><div className="splash-line"/></main>;
